@@ -11,29 +11,26 @@ const AppSidebar = () => {
   const location = useLocation();
 
   return (
-    <aside className="w-[260px] min-h-screen bg-card/80 backdrop-blur-xl border-r border-border flex flex-col py-8 px-5">
-      <div className="flex items-center gap-3 px-3 mb-12">
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-sm" style={{ background: "var(--gradient-primary)" }}>
-          <Sparkles className="w-4.5 h-4.5 text-primary-foreground" />
+    <aside className="w-[240px] min-h-screen bg-card border-r border-border flex flex-col py-6 px-4">
+      <div className="flex items-center gap-2.5 px-3 mb-10">
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "var(--gradient-primary)" }}>
+          <Sparkles className="w-4 h-4 text-primary-foreground" />
         </div>
-        <div>
-          <span className="font-bold text-[15px] tracking-tight text-foreground block leading-tight">OC创作实验室</span>
-          <span className="text-[10px] text-muted-foreground/60 font-medium tracking-wide">AI Creative Studio</span>
-        </div>
+        <span className="font-bold text-base tracking-tight text-foreground">OC创作实验室</span>
       </div>
-      <nav className="flex flex-col gap-1.5">
+      <nav className="flex flex-col gap-1">
         {navItems.map((item) => {
           const isActive = location.pathname === item.to;
           return (
             <NavLink
               key={item.to}
               to={item.to}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
                 ${isActive
-                  ? "text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                  ? "text-foreground bg-accent"
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                 }`}
-              style={isActive ? { background: "var(--gradient-primary)", boxShadow: "0 4px 14px -2px hsla(243, 100%, 70%, 0.3)" } : {}}
+              style={isActive ? { boxShadow: "inset 0 0 0 1px hsl(var(--border))" } : {}}
             >
               <item.icon className="w-[18px] h-[18px]" />
               {item.label}
@@ -42,7 +39,7 @@ const AppSidebar = () => {
         })}
       </nav>
       <div className="mt-auto px-3 pt-6 border-t border-border">
-        <div className="text-[11px] text-muted-foreground/40 font-medium">© 2026 OC创作实验室</div>
+        <div className="text-xs text-muted-foreground/50">© 2026 OC创作实验室</div>
       </div>
     </aside>
   );
