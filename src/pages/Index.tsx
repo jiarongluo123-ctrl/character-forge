@@ -78,7 +78,7 @@ const Index = () => {
 
       {/* Recent characters */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 0.5 }}>
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">最近生成角色</h2>
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4"><h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">创作灵感示例</h2></h2>
         <div className="flex gap-4 overflow-x-auto pb-2">
           {recentCharacters.map((c) => (
             <div key={c.name} className="rounded-2xl bg-card border border-border min-w-[180px] p-5 flex flex-col gap-3 cursor-default hover:shadow-md transition-shadow" style={{ boxShadow: "var(--shadow-card)" }}>
