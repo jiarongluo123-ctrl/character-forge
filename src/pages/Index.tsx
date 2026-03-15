@@ -1,6 +1,7 @@
 import { Wand2, Users, MessageSquare, Lock, ArrowRight, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useMemo } from "react";
 
 const recentCharacters = [
   { name: "苏晚棠", world: "古风仙侠", trait: "外冷内热 · 剑修", color: "from-violet-400 to-indigo-400" },
@@ -28,20 +29,56 @@ const features = [
   },
 ];
 
-const container = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
-const item = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.2, 0, 0, 1] as const } } };
+const container = { hidden: {}, show: { transition: { staggerChildren: 0.12 } } };
+const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const } } };
 
 const Index = () => {
   const navigate = useNavigate();
 
+  // Generate stable random particles
+  const particles = useMemo(() => 
+    Array.from({ length: 18 }, (_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      size: 3 + Math.random() * 4,
+      delay: Math.random() * 8,
+      duration: 6 + Math.random() * 6,
+      opacity: 0.1 + Math.random() * 0.2,
+    })), []
+  );
+
   return (
-    <div className="max-w-5xl mx-auto px-8 pt-16 pb-12">
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.2, 0, 0, 1] }}>
+    <div className="relative max-w-5xl mx-auto px-8 pt-16 pb-12">
+      {/* Floating particles */}
+      {particles.map((p) => (
+        <div
+          key={p.id}
+          className="particle"
+          style={{
+            left: p.left,
+            top: p.top,
+            width: p.size,
+            height: p.size,
+            animationDelay: `${p.delay}s`,
+            animationDuration: `${p.duration}s`,
+            opacity: p.opacity,
+          }}
+        />
+      ))}
+
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}>
         {/* Hero */}
-        <div className="mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-medium mb-5">
+        <div className="mb-14 relative z-10">
+          <motion.div 
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-primary text-xs font-medium mb-5 border border-primary/15"
+            style={{ background: 'hsl(243 100% 70% / 0.08)' }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
             <Sparkles className="w-3.5 h-3.5" /> AI驱动 · 为创作者而生
-          </div>
+          </motion.div>
           <h1 className="text-4xl font-bold tracking-tight text-foreground mb-3">赋予你的角色灵魂。</h1>
           <p className="text-muted-foreground text-base max-w-xl leading-relaxed">
             辅助角色创作工具 —— 为小说作者、OC创作者与同人创作者提供灵感生成
@@ -51,14 +88,24 @@ const Index = () => {
       </motion.div>
 
       {/* Feature cards */}
-      <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-16" variants={container} initial="hidden" animate="show">
+      <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-16 relative z-10" variants={container} initial="hidden" animate="show">
         {features.map((f) => (
           <motion.div key={f.title} variants={item}
-            className="rounded-2xl bg-card border border-border p-7 flex flex-col transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
-            style={{ boxShadow: "var(--shadow-card)" }}
+            className="group rounded-2xl border border-border/60 p-7 flex flex-col transition-all duration-300 cursor-default"
+            style={{ 
+              boxShadow: "var(--shadow-card)",
+              background: 'hsl(0 0% 100% / 0.8)',
+              backdropFilter: 'blur(12px)',
+            }}
+            whileHover={{ 
+              y: -4, 
+              scale: 1.01,
+              boxShadow: "0 4px 16px -2px rgba(100,99,255,.12), 0 8px 24px -4px rgba(0,0,0,.10)",
+            }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
           >
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5"
-              style={f.enabled ? { background: "var(--gradient-primary)" } : { backgroundColor: "hsl(var(--muted))" }}>
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110"
+              style={f.enabled ? { background: "var(--gradient-primary)", boxShadow: "0 4px 12px -2px hsla(243, 100%, 70%, 0.3)" } : { backgroundColor: "hsl(var(--muted))" }}>
               <f.icon className={`w-5 h-5 ${f.enabled ? "text-primary-foreground" : "text-muted-foreground"}`} />
             </div>
             <h3 className="font-bold text-foreground mb-2">{f.title}</h3>
@@ -68,7 +115,7 @@ const Index = () => {
                 {f.btn} <ArrowRight className="w-4 h-4" />
               </button>
             ) : (
-              <button disabled className="bg-muted text-muted-foreground text-sm font-medium px-6 py-3 rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
+              <button disabled className="bg-muted text-muted-foreground text-sm font-medium px-6 py-3 rounded-xl flex items-center justify-center gap-2 cursor-not-allowed transition-all duration-300">
                 <Lock className="w-3.5 h-3.5" /> {f.btn}
               </button>
             )}
@@ -77,12 +124,24 @@ const Index = () => {
       </motion.div>
 
       {/* Recent characters */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 0.5 }}>
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4"><h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">创作灵感示例</h2></h2>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 0.5 }} className="relative z-10">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">创作灵感示例</h2>
         <div className="flex gap-4 overflow-x-auto pb-2">
-          {recentCharacters.map((c) => (
-            <div key={c.name} className="rounded-2xl bg-card border border-border min-w-[180px] p-5 flex flex-col gap-3 cursor-default hover:shadow-md transition-shadow" style={{ boxShadow: "var(--shadow-card)" }}>
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${c.color} flex items-center justify-center text-primary-foreground font-bold text-sm`}>
+          {recentCharacters.map((c, i) => (
+            <motion.div 
+              key={c.name} 
+              className="rounded-2xl border border-border/60 min-w-[180px] p-5 flex flex-col gap-3 cursor-default transition-all duration-300"
+              style={{ 
+                boxShadow: "var(--shadow-card)",
+                background: 'hsl(0 0% 100% / 0.8)',
+                backdropFilter: 'blur(12px)',
+              }}
+              whileHover={{ y: -3, scale: 1.02 }}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 + i * 0.08, duration: 0.5 }}
+            >
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${c.color} flex items-center justify-center text-primary-foreground font-bold text-sm shadow-md`}>
                 {c.name[0]}
               </div>
               <div>
@@ -90,7 +149,7 @@ const Index = () => {
                 <div className="text-xs text-muted-foreground mt-0.5">{c.world}</div>
                 <div className="text-xs text-muted-foreground/60 mt-1">{c.trait}</div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </motion.div>
