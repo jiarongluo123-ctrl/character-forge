@@ -44,7 +44,7 @@ const Index = () => {
           </div>
           <h1 className="text-4xl font-bold tracking-tight text-foreground mb-3">赋予你的角色灵魂。</h1>
           <p className="text-muted-foreground text-base max-w-xl leading-relaxed">
-            AI辅助角色创作工具 —— 为小说作者、OC创作者与同人创作者提供灵感生成
+            辅助角色创作工具 —— 为小说作者、OC创作者与同人创作者提供灵感生成
           </p>
           <p className="text-xs text-muted-foreground/50 mt-3 tabular-nums">已为创作者提供 1,240,812 次灵感瞬间</p>
         </div>
